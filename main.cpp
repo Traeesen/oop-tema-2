@@ -1,11 +1,6 @@
 /*
-Ai devenit seful unei organizatii mari, construita din mai multe departamente, fiecare avand o lista de proiecte si angajati. Tu trebuie sa alegi cum sa optimizezi modul in care angajatii sunt repartizati in proiecte astfel incat organizatia sa obtina profitul maxium.
-Fiecare departament are un nume si un buget maxim.
-Fiecare proiect are un nume, o dificultate si o recompensa pe care organizatia o primeste daca proiectul este terminat.
-Fiecare angajat are un nume, un salariu care trebuie platit lunar, si un numar de ani de experienta.
-Un angajat cu X ani de experienta poate face (2 + X) 'lucru' pe luna. Un proiect este terminat atunci cand 'lucrul' facut de toti angajatii care lucreaza la proiect a trecut de nivelul de dificultate a proiectului.
-
-Programul citeste de la tastatura N departamente, fiecare avand M angajati si P proiecte, dupa care alege un mod optim de a organiza angajatii in proiecte pentru a maximiza profitul. Acesta este afisat pe ecran.
+Numele temei pt review: Pariuri sportive
+Nume coleg review: Bugeac Alexandru
 */
 #include <iostream>
 #include <cstring>
