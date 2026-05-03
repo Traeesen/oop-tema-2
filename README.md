@@ -10,3 +10,6 @@ Spitalul are si:
   * Administratori, fara de care spitalul nu poate redirectiona pacienti catre doctori. Un administrator poate redirectiona un singur pacient in orice moment, ceea ce poate rezulta in cozi lungi daca nu exista destui administratoi.
 
 Cele trei tipuri de angajati au fost implementate ca clase derivate a unei clase abstracta de 'angajat'. Acestea se folosesc de multa functionalitate pe care o au in comun, dar au si functionalitatea lor, indeplinind lucrul lor cu ajutorul functilor virtuale.
+
+Numele temei pt review: Pariuri sportive
+Nume coleg review: Bugeac Alexandru
