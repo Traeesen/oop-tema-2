@@ -12,4 +12,5 @@ Spitalul are si:
 Cele trei tipuri de angajati au fost implementate ca clase derivate a unei clase abstracta de 'angajat'. Acestea se folosesc de multa functionalitate pe care o au in comun, dar au si functionalitatea lor, indeplinind lucrul lor cu ajutorul functilor virtuale.
 
 Numele temei pt review: Pariuri sportive
+
 Nume coleg review: Bugeac Alexandru
