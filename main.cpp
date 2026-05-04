@@ -6,22 +6,26 @@ Nume coleg review: Bugeac Alexandru
 #include <cstring>
 #include <vector>
 #include <string>
+#include <memory>
+#include <iostream>
 #include "staff.h"
 #include "department.h"
 #include "patient.h"
+#include "staff.cpp"
+#include "patient.cpp"
+#include "department.cpp"
 
 int main()
 {
     std::vector<Department> departments;
-    std::vector<Staff> staff;
+    std::vector<std::shared_ptr<Staff>> staff;
     {
         std::ifstream fin("doctors.txt");
-        while(fin)
+        std::string name, role;
+        int patientsPerDay, salary;
+        while(fin >> name >> salary >> role >> patientsPerDay)
         {
-            std::string name, role;
-            int patientsPerDay, salary;
-            fin >> name >> salary >> role >> patientsPerDay;
-            Doctor d(name, salary, role, patientsPerDay);
+            std::shared_ptr<Doctor> d = std::make_shared<Doctor>(name, salary, role, patientsPerDay);
 
             int count = departments.size();
             bool found=false;
@@ -45,12 +49,11 @@ int main()
     }
     {
         std::ifstream fin("nurses.txt");
-        while(fin)
+        std::string name, role;
+        int salary;
+        while(fin >> name >> salary >> role)
         {
-            std::string name, role;
-            int salary;
-            fin >> name >> salary >> role;
-            Nurse d(name, salary, role);
+            std::shared_ptr<Nurse> d = std::make_shared<Nurse>(name, salary, role);
 
             int count = departments.size();
             bool found=false;
@@ -73,12 +76,11 @@ int main()
 
     {
         std::ifstream fin("admins.txt");
-        while(fin)
+        std::string name;
+        int salary;
+        while(fin >> name >> salary)
         {
-            std::string name;
-            int salary;
-            fin >> name >> salary;
-            Admin d(name, salary);
+            std::shared_ptr<Admin> d = std::make_shared<Admin>(name, salary);
             staff.push_back(d);
         }
     }
@@ -86,13 +88,11 @@ int main()
     std::vector<Patient> patients;
     {
         std::ifstream fin("patients.txt");
-        while(fin)
+        std::string name;
+        int age;
+        while(fin >> name >> age)
         {
-            std::string name;
-            int age;
-            fin >> name >> age;
             Patient p(name, age);
-            patients.push_back(p);
 
             std::string problems;
             std::getline(fin, problems); //luam restul liniei si o punem intr-un singur stringg
@@ -120,16 +120,20 @@ int main()
             {
                 p.addProblem(word);
             }
+
+            patients.push_back(p);
         }
     }
 
-        for(int hour=1; hour<=8; hour++) // 8 ore de munca
+    for(int hour=1; hour<=8; hour++) // 8 ore de munca
+    {
+        int size = staff.size();
+        for(int i=size-1; i>=0; i--)
         {
-            int size = staff.size();
-            for(int i=size-1; i>=0; i++)
-            {
-                staff[i].doWork(patients, departments);
-            }
+            staff[i]->doWork(patients, departments);
         }
-    
+    }
+    std::cout<<"ya";
+
+    return 0;
 }

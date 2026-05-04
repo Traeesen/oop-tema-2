@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "Patient.h"
+#include "patient.h"
 
 //setter-e/getter-e
 
@@ -20,6 +20,7 @@ int Patient::getAge() const
 {
     return age;
 }
+
 void Patient::setProblems(const std::vector<std::string>& newProblems)
 {
     problems = newProblems;

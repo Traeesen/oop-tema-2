@@ -40,6 +40,10 @@ Staff::Staff(const Staff& other) : id(nextId++)
     setName(other.name);
 }
 
+Staff::~Staff()
+{
+}
+
 int Staff::nextId=1;
 
 //operatori
@@ -98,7 +102,7 @@ Doctor::Doctor(const Doctor& other) : Staff(other)
 }
 
 //metoda virtuala
-void Doctor::doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments)
+void Doctor::doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments)
 {
     std::cout << "Doctor treating patients in " << specialisation << "\n";
 }
@@ -133,12 +137,12 @@ Nurse::Nurse() : Staff(), role("")
 Nurse::Nurse(const std::string& name, int salary, const std::string& role) : Staff(name, salary), role(role)
 {
 }
-Nurse::Nurse(const Nurse& other) : Staff(other)
+Nurse::Nurse(const Nurse& other) : Staff(other), role(other.role)
 {
 }
 
 //metoda virtuala
-void Nurse::doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments)
+void Nurse::doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments)
 {
     std::cout << "Nurse working in " << role << "\n";
 }
@@ -177,7 +181,7 @@ Admin::Admin(const Admin& other) : Staff(other)
 }
 
 //metoda virtuala
-void Admin::doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments)
+void Admin::doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments)
 {
 }
 

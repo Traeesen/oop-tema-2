@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <string>
 #include "patient.h"
 
 class Department;
@@ -27,7 +28,7 @@ class Staff
 
         Staff(const Staff& other);
         //destructor
-        ~Staff();
+        virtual ~Staff();
 
         friend void Swap(Staff& a, Staff& b);
 
@@ -36,7 +37,7 @@ class Staff
         Staff& operator=(const Staff& other);
 
         //metoda virtuala
-        virtual void doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments) = 0;
+        virtual void doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments) = 0;
 };
 
 class Doctor : public Staff 
@@ -55,11 +56,11 @@ class Doctor : public Staff
 
         //constuctori
         Doctor();
-        Doctor(const std::string& name, int salay, const std::string& specialisation, int patientsPerDay);
+        Doctor(const std::string& name, int salary, const std::string& specialisation, int patientsPerDay);
         Doctor(const Doctor& other);
 
         //override
-        void doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments) override;
+        void doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments) override;
 
         //operatori
         Doctor& operator=(const Doctor& other);
@@ -68,7 +69,7 @@ class Doctor : public Staff
 
 class Nurse : public Staff
 {
-    const std::string role;
+    std::string role;
 
     public:
         // constructori
@@ -77,7 +78,7 @@ class Nurse : public Staff
         Nurse(const Nurse& other);
 
         // override
-        void doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments) override;
+        void doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments) override;
 
         //operatori
         Nurse& operator=(const Nurse& other);
@@ -94,7 +95,7 @@ class Admin : public Staff
         Admin(const Admin& other);
 
         // override
-        void doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments) override;
+        void doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments) override;
 
         // operatori
         Admin& operator=(const Admin& other);

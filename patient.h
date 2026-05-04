@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <string>
 
 class Patient
 {
@@ -16,10 +17,6 @@ public:
 
     void setAge(const int newAge);
     int getAge() const;
-
-    void setVisits(const std::vector<std::string>& newVisits);
-    void addVisit(const std::string& newVisit);
-    std::vector<std::string> getVisits() const;
 
     void setProblems(const std::vector<std::string>& newProblems);
     void addProblem(const std::string& newProblem);

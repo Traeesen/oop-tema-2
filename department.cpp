@@ -6,8 +6,8 @@
 
 //monte de getteurs et setteurs
 int Department::getEmployeeCount() const { return assignedStaff.size(); }
-const std::vector<Staff*>& Department::getStaff() const { return assignedStaff; }
-void Department::setName(const std::string newName)
+const std::vector<std::shared_ptr<Staff>>& Department::getStaff() const { return assignedStaff; }
+void Department::setName(const std::string& newName)
 {
     name = newName;
 }
@@ -35,10 +35,10 @@ Department::~Department()
 }
 
 //adaugam un angajat in departament
-void Department::addEmployee(Staff& e)
+void Department::addEmployee(std::shared_ptr<Staff> e)
 {
 
-    assignedStaff.push_back(&e);
+    assignedStaff.push_back(e);
 }
 
 Department& Department::operator=(const Department& other)
