@@ -1,5 +1,9 @@
+#pragma once
 #include <iostream>
 #include <vector>
+#include "patient.h"
+
+class Department;
 
 class Staff
 {
@@ -32,7 +36,7 @@ class Staff
         Staff& operator=(const Staff& other);
 
         //metoda virtuala
-        virtual void doWork() = 0;
+        virtual void doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments) = 0;
 };
 
 class Doctor : public Staff 
@@ -55,7 +59,7 @@ class Doctor : public Staff
         Doctor(const Doctor& other);
 
         //override
-        void doWork() override;
+        void doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments) override;
 
         //operatori
         Doctor& operator=(const Doctor& other);
@@ -64,17 +68,16 @@ class Doctor : public Staff
 
 class Nurse : public Staff
 {
-    std::string department;
-    int shiftsPerWeek;
+    const std::string role;
 
     public:
         // constructori
         Nurse();
-        Nurse(const std::string& name, int salary, const std::string& department, int shiftsPerWeek);
+        Nurse(const std::string& name, int salary, const std::string& role);
         Nurse(const Nurse& other);
 
         // override
-        void doWork() override;
+        void doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments) override;
 
         //operatori
         Nurse& operator=(const Nurse& other);
@@ -91,7 +94,7 @@ class Admin : public Staff
         Admin(const Admin& other);
 
         // override
-        void doWork() override;
+        void doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments) override;
 
         // operatori
         Admin& operator=(const Admin& other);

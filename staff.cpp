@@ -98,7 +98,7 @@ Doctor::Doctor(const Doctor& other) : Staff(other)
 }
 
 //metoda virtuala
-void Doctor::doWork()
+void Doctor::doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments)
 {
     std::cout << "Doctor treating patients in " << specialisation << "\n";
 }
@@ -126,25 +126,21 @@ std::ostream& operator<<(std::ostream& os, const Doctor& d)
 // -- ASISTENT --
 
 //constructori
-Nurse::Nurse() : Staff(), department(""), shiftsPerWeek(0)
+Nurse::Nurse() : Staff(), role("")
 {
 }
 
-Nurse::Nurse(const std::string& name, int salary, const std::string& department, int shiftsPerWeek) : Staff(name, salary)
+Nurse::Nurse(const std::string& name, int salary, const std::string& role) : Staff(name, salary), role(role)
 {
-
 }
-
 Nurse::Nurse(const Nurse& other) : Staff(other)
 {
-    setDepartment(other.department);
-    setShiftsPerWeek(other.shiftsPerWeek);
 }
 
 //metoda virtuala
-void Nurse::doWork()
+void Nurse::doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments)
 {
-    std::cout << "Nurse working in " << department << "\n";
+    std::cout << "Nurse working in " << role << "\n";
 }
 
 //operatori
@@ -152,8 +148,6 @@ Nurse& Nurse::operator=(const Nurse& other)
 {
     if (this == &other) return *this;
     Staff::operator=(other);
-    setDepartment(other.getDepartment());
-    setShiftsPerWeek(other.getShiftsPerWeek());
     return *this;
 }
 
@@ -161,8 +155,6 @@ std::ostream& operator<<(std::ostream& os, const Nurse& n)
 {
     os << (n.getName() != "" ? n.getName() : "none");
     os << ", Salary: " << n.getSalary();
-    os << ", Department: " << n.getDepartment();
-    os << ", Shifts/Week: " << n.getShiftsPerWeek();
     return os;
 }
 
@@ -170,47 +162,23 @@ std::ostream& operator<<(std::ostream& os, const Nurse& n)
 // -- ADMIN --
 
 //getter-e/setter-e
-void Admin::setRole(const std::string& r)
-{
-    role = r;
-}
-
-const std::string& Admin::getRole() const
-{
-    return role;
-}
-
-void Admin::setHoursPerWeek(int hours)
-{
-    hoursPerWeek = hours;
-}
-
-int Admin::getHoursPerWeek() const
-{
-    return hoursPerWeek;
-}
 
 //constructori
-Admin::Admin() : Staff(), role(""), hoursPerWeek(0)
+Admin::Admin() : Staff()
 {
 }
 
-Admin::Admin(const std::string& name, int salary, const std::string& role, int hoursPerWeek) : Staff(name, salary)
+Admin::Admin(const std::string& name, int salary) : Staff(name, salary)
 {
-    setRole(role);
-    setHoursPerWeek(hoursPerWeek);
 }
 
 Admin::Admin(const Admin& other) : Staff(other)
 {
-    setRole(other.role);
-    setHoursPerWeek(other.hoursPerWeek);
 }
 
 //metoda virtuala
-void Admin::doWork()
+void Admin::doWork(std::vector<Patient> waitingInQueue, std::vector<Department> departments)
 {
-    std::cout << "Admin handling " << role << " tasks\n";
 }
 
 //operatori
@@ -218,8 +186,6 @@ Admin& Admin::operator=(const Admin& other)
 {
     if (this == &other) return *this;
     Staff::operator=(other);
-    setRole(other.getRole());
-    setHoursPerWeek(other.getHoursPerWeek());
     return *this;
 }
 
@@ -227,7 +193,5 @@ std::ostream& operator<<(std::ostream& os, const Admin& a)
 {
     os << (a.getName() != "" ? a.getName() : "none");
     os << ", Salary: " << a.getSalary();
-    os << ", Role: " << a.getRole();
-    os << ", Hours/Week: " << a.getHoursPerWeek();
     return os;
 }

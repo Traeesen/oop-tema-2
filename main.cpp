@@ -2,128 +2,134 @@
 Numele temei pt review: Pariuri sportive
 Nume coleg review: Bugeac Alexandru
 */
-#include <iostream>
+#include <fstream>
 #include <cstring>
 #include <vector>
+#include <string>
 #include "staff.h"
-#include "staff.cpp"
 #include "department.h"
-#include "department.cpp"
-#include "patient.cpp"
+#include "patient.h"
 
 int main()
 {
-    std::cout << "Do you wish to autogenerate data? (Y/N) ";
-    char answer[2];
-    std::cin.getline(answer,2);
-    answer[1]=0;
-    if(strcmp(answer, "Y")==0 || strcmp(answer, "y")==0)
+    std::vector<Department> departments;
+    std::vector<Staff> staff;
     {
-        Department d("HR", 10000);
+        std::ifstream fin("doctors.txt");
+        while(fin)
+        {
+            std::string name, role;
+            int patientsPerDay, salary;
+            fin >> name >> salary >> role >> patientsPerDay;
+            Doctor d(name, salary, role, patientsPerDay);
 
-        Employee e1("Alice", 3000, 5);
-        Employee e2("Bob", 2500, 3);
-        Employee e3("Charlie", 4000, 8);
-        Employee e4("MerekiDor", 1, 189);
-        Employee e5("I_Like_Money", 800000, 0);
-
-        Project p1("HR", 20000, 100);
-        Project p2("Getting rid of MerekiDor", 1800, 60);
-
-        d.addEmployee(e1);
-        d.addEmployee(e2);
-        d.addEmployee(e3);
-        d.addEmployee(e4);
-        d.addEmployee(e5);
-
-        d.addProject(p1);
-        d.addProject(p2);
-
-        d.assignEmployeeToProject(e1, p1);
-        d.assignEmployeeToProject(e2, p1);
-        d.assignEmployeeToProject(e3, p2);
-
-        std::cout << d << "\n";
-        
-        d.optimiseAssignments();
-
-        std::cout<<"\n--- ASSIGNMENTS HAVE BEEN OPTIMISED ---\n\n";
-        std::cout<<d;
+            int count = departments.size();
+            bool found=false;
+            for(int i=0; i<count; i++)
+            {
+                if(departments[i].getName() == role)
+                {
+                    found=true;
+                    departments[i].addEmployee(d);
+                    break;
+                }
+            }
+            if(found==false)
+            {
+                Department dep(role);
+                dep.addEmployee(d);
+                departments.push_back(dep);
+            }
+            staff.push_back(d);
+        }
     }
-    else
     {
-        int numDepartments;
-        std::cout << "Enter number of departments: ";
-        std::cin >> numDepartments;
-        std::cin.ignore();
-
-        Department** departments = new Department*[numDepartments];
-
-        for (int d = 0; d < numDepartments; d++)
+        std::ifstream fin("nurses.txt");
+        while(fin)
         {
-            char depName[100];
-            std::cout << "\nDepartment " << d + 1 << " name: ";
-            std::cin.getline(depName, 100);
+            std::string name, role;
+            int salary;
+            fin >> name >> salary >> role;
+            Nurse d(name, salary, role);
 
-            int budget;
-            std::cout << "Enter monthly budget: ";
-            std::cin >> budget;
-            std::cin.ignore();
-
-            departments[d] = new Department(depName, budget);
-
-            int numEmployees;
-            std::cout << "Enter number of employees: ";
-            std::cin >> numEmployees;
-            std::cin.ignore();
-
-            for (int i = 0; i < numEmployees; i++)
+            int count = departments.size();
+            bool found=false;
+            for(int i=0; i<count; i++)
             {
-                char name[100];
-                int salary, experience;
-                std::cout << "Employee " << i + 1 << " name: ";
-                std::cin.getline(name, 100);
-                std::cout << "Salary: ";
-                std::cin >> salary;
-                std::cout << "Years of experience: ";
-                std::cin >> experience;
-                std::cin.ignore();
-
-                Employee* e = new Employee(name, salary, experience);
-                departments[d]->addEmployee(*e);
+                if(departments[i].getName() == role)
+                {
+                    found=true;
+                    departments[i].addEmployee(d);
+                    break;
+                }
             }
-
-            int numProjects;
-            std::cout << "Enter number of projects: ";
-            std::cin >> numProjects;
-            std::cin.ignore();
-
-            for (int i = 0; i < numProjects; i++)
+            if(found==false)
             {
-                char name[100];
-                int reward, work;
-                std::cout << "Project " << i + 1 << " name: ";
-                std::cin.getline(name, 100);
-                std::cout << "Reward: ";
-                std::cin >> reward;
-                std::cout << "Work required: ";
-                std::cin >> work;
-                std::cin.ignore();
-
-                Project* p = new Project(name, reward, work);
-                departments[d]->addProject(*p);
+                // TODO THROW ERROR
             }
-
-            departments[d]->optimiseAssignments();
+            staff.push_back(d);
         }
-
-        for (int d = 0; d < numDepartments; d++)
-        {
-            std::cout<<'\n'<<*(departments[d]);
-            delete departments[d];
-        }
-        delete[] departments;
     }
 
-    return 0;
+    {
+        std::ifstream fin("admins.txt");
+        while(fin)
+        {
+            std::string name;
+            int salary;
+            fin >> name >> salary;
+            Admin d(name, salary);
+            staff.push_back(d);
+        }
+    }
+
+    std::vector<Patient> patients;
+    {
+        std::ifstream fin("patients.txt");
+        while(fin)
+        {
+            std::string name;
+            int age;
+            fin >> name >> age;
+            Patient p(name, age);
+            patients.push_back(p);
+
+            std::string problems;
+            std::getline(fin, problems); //luam restul liniei si o punem intr-un singur stringg
+            
+            std::string word;
+
+            for (size_t i = 0; i < problems.size(); i++) //impartim linia in cuvinte
+            {
+                if (problems[i] == ' ')
+                {
+                    if (!word.empty())
+                    {
+                        p.addProblem(word);
+                        word.clear();
+                    }
+                }
+                else
+                {
+                    word += problems[i];
+                }
+            }
+
+            // last word
+            if (!word.empty())
+            {
+                p.addProblem(word);
+            }
+        }
+    }
+
+        for(int hour=1; hour<=8; hour++) // 8 ore de munca
+        {
+            int size = staff.size();
+            for(int i=size-1; i>=0; i++)
+            {
+                staff[i].doWork(patients, departments);
+            }
+        }
+    
 }
