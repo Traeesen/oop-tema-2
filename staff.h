@@ -33,6 +33,8 @@ class Staff
         friend void Swap(Staff& a, Staff& b);
 
         //operatori
+        virtual void display(std::ostream& os) const = 0; //display virtual
+
         friend std::ostream& operator<<(std::ostream& os, const Staff& e);
         Staff& operator=(const Staff& other);
 
@@ -44,6 +46,7 @@ class Doctor : public Staff
 {
     int patientsPerDay;
     std::string specialisation;
+    int patientsTreated=0;
 
     public: 
         // gettere/settere
@@ -63,8 +66,8 @@ class Doctor : public Staff
         void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments) override;
 
         //operatori
+        void display(std::ostream& os) const override;
         Doctor& operator=(const Doctor& other);
-        friend std::ostream& operator<<(std::ostream& os, const Doctor& d);
 };
 
 class Nurse : public Staff
@@ -81,12 +84,13 @@ class Nurse : public Staff
         void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments) override;
 
         //operatori
+        void display(std::ostream& os) const override;
         Nurse& operator=(const Nurse& other);
-        friend std::ostream& operator<<(std::ostream& os, const Nurse& n);
 };
 
 class Admin : public Staff
 {
+    int patientsRedirected=0;
 
     public:
         // constructori
@@ -98,6 +102,6 @@ class Admin : public Staff
         void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments) override;
 
         // operatori
+        void display(std::ostream& os) const override;
         Admin& operator=(const Admin& other);
-        friend std::ostream& operator<<(std::ostream& os, const Admin& a);
 };

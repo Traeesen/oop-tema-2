@@ -56,8 +56,7 @@ Staff& Staff::operator=(const Staff& other)
 }
 std::ostream& operator<<(std::ostream& os, const Staff& e)
 {
-    os << (e.getName() != "" ? e.getName() : "none");
-    os << ", Salary: " << e.getSalary();
+    e.display(os);
     return os;
 }
 
@@ -101,6 +100,12 @@ Doctor::Doctor(const Doctor& other) : Staff(other)
     setPatientsPerDay(other.patientsPerDay);
 }
 
+void Doctor::display(std::ostream& os) const //afisarea virtuala prin interfata non-virtuala
+{
+    os << "Doctor: " << getName() << ", Salary: " << getSalary() << ", Specialisation: " << specialisation;
+    os << ", Patients treated today: " << patientsTreated;
+}
+
 //metoda virtuala
 void Doctor::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments)
 {
@@ -110,27 +115,37 @@ void Doctor::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::
         {
             int patientsThisHour = patientsPerDay / 8;
 
-            if (patientsThisHour < 1) patientsThisHour = 1;
-
-            // nurse doubles efficiency
-            if (departments[i].useAvailableNurse())
-            {
-                patientsThisHour *= 2;
-            }
-            else
+            // un asistent dubleaza productivitatea
+            bool hasNurse = departments[i].useAvailableNurse();
+            if (!hasNurse)
             {
                 patientsThisHour /= 2;
-                if (patientsThisHour < 1) patientsThisHour = 1;
             }
+            if (patientsThisHour < 1) patientsThisHour = 1;
 
+            if(departments[i].getPatients().size() == 0)
+            {
+                int wastedMoney = getSalary() / 20;
+
+                std::cout << "Recommendation: " << getName() << " had no patients to treat in " << specialisation << ". Approximately " << wastedMoney << " ron was wasted this hour in salary expenses. Consider reducing staff in this department or redirecting more patients here.\n";
+
+                break;
+            }
             for (int j = 0; j < patientsThisHour && departments[i].getPatients().size() > 0; j++)
             {
                 std::shared_ptr<Patient> patient = departments[i].getPatients()[0];
 
                 departments[i].removeFirstPatient();
 
+                if (patient->getAge() >= 60 && !hasNurse)
+                {
+                    std::cout << getName()<< " could not treat "<< patient->getName()<< " because elderly patients need nurse assistance.\n Recommendation: Hire more nurses so that elderly patients can receive assistance.";
+                    break;
+                }
+
                 if (patient->getProblems().size() > 0)
                 {
+                    patientsTreated++;
                     std::cout << getName() << " Treated " << patient->getName() << " for " << patient->getProblems()[0] << "\n";
                     patient->removeFirstProblem();
                 }
@@ -157,15 +172,6 @@ Doctor& Doctor::operator=(const Doctor& other)
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, const Doctor& d)
-{
-    os << (d.getName() != "" ? d.getName() : "none");
-    os << ", Salary: " << d.getSalary();
-    os << ", Specialization: " << d.getSpecialisation();
-    os << ", Patients/Day: " << d.getPatientsPerDay();
-    return os;
-}
-
 
 // -- ASISTENT --
 
@@ -180,6 +186,12 @@ Nurse::Nurse(const std::string& name, int salary, const std::string& role) : Sta
 Nurse::Nurse(const Nurse& other) : Staff(other), role(other.role)
 {
 }
+
+void Nurse::display(std::ostream& os) const //afisarea virtuala prin interfata non-virtuala
+{
+    os << "Nurse: " << getName() << ", Salary: " << getSalary() << ", Assisting: " << role;
+}
+
 
 //metoda virtuala
 void Nurse::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments)
@@ -203,17 +215,7 @@ Nurse& Nurse::operator=(const Nurse& other)
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, const Nurse& n)
-{
-    os << (n.getName() != "" ? n.getName() : "none");
-    os << ", Salary: " << n.getSalary();
-    return os;
-}
-
-
 // -- ADMIN --
-
-//getter-e/setter-e
 
 //constructori
 Admin::Admin() : Staff()
@@ -228,6 +230,12 @@ Admin::Admin(const Admin& other) : Staff(other)
 {
 }
 
+void Admin::display(std::ostream& os) const //afisarea virtuala prin interfata non-virtuala
+{
+    os << "Admin: " << getName() << ", Salary: " << getSalary();
+    os << ", Patients redirected today: " << patientsRedirected;
+}
+
 //metoda virtuala
 void Admin::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments)
 {
@@ -236,7 +244,7 @@ void Admin::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::v
     for (int i = 0; i < patientsToRedirect && waitingInQueue.size() > 0; i++)
     {
         std::shared_ptr<Patient> patient = waitingInQueue[0];
-        waitingInQueue.erase(waitingInQueue.begin());
+        
 
         if (patient->getProblems().size() == 0)
             continue;
@@ -252,6 +260,7 @@ void Admin::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::v
                 departments[j].addPatient(patient);
                 found = true;
 
+                patientsRedirected++;
                 std::cout << getName()<< " redirected "<< patient->getName()<< " to "<< neededDepartment<< "\n";
 
                 break;
@@ -261,7 +270,9 @@ void Admin::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::v
         if (!found)
         {
             std::cout << getName()<< " could not redirect "<< patient->getName()<< " because department "<< neededDepartment<< " does not exist. Patient cannot be treated.\n";
+
         }
+        else waitingInQueue.erase(waitingInQueue.begin());
     }
 }
 
@@ -271,11 +282,4 @@ Admin& Admin::operator=(const Admin& other)
     if (this == &other) return *this;
     Staff::operator=(other);
     return *this;
-}
-
-std::ostream& operator<<(std::ostream& os, const Admin& a)
-{
-    os << (a.getName() != "" ? a.getName() : "none");
-    os << ", Salary: " << a.getSalary();
-    return os;
 }

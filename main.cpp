@@ -137,10 +137,43 @@ int main()
         }
         if(patients.size() == 0)
         {
-            std::cout<< "\nALL PATIENTS HAVE BEEN TREATED";
+            std::cout << "\nALL PATIENTS HAVE BEEN TREATED\n";
+
+            int unusedHours = 8 - hour;
+
+            if(unusedHours > 0)
+            {
+                int totalSalary = 0;
+
+                for(int i = 0; i < staff.size(); i++)
+                    totalSalary += staff[i]->getSalary();
+
+                int wastedMoney = (totalSalary * unusedHours) / 20;
+
+                std::cout << "Recommendation: The hospital finished " << unusedHours << " hour(s) early and wasted approximately " << wastedMoney << " ron in salaries. Consider reducing staff or accepting more patients.\n";
+            }
+
             break;
         }
     }
+    if(patients.size() > 0)
+    {
+        int untreatedPatients = patients.size();
+
+        int estimatedLoss = untreatedPatients * 1000;
+
+        std::cout << "\nRecommendation: " << untreatedPatients << " patient(s) were not treated before the hospital closed. The hospital likely needs more doctors, nurses, or administrators in overloaded departments. Alternatively, there may be departments that don't exist.";
+    }
+
+    std::cout << "\n\nFINAL STAFF RESULTS:";
+    std::cout << "\nADMINS:\n";
+    for(int i = 0; i < staff.size(); i++)
+        if(std::dynamic_pointer_cast<Admin>(staff[i]))
+            std::cout << *staff[i] << "\n";
+
+    std::cout << "\nDEPARTMENTS:\n";
+    for(int i = 0; i < departments.size(); i++)
+        std::cout << departments[i] << "\n";
 
     return 0;
 }

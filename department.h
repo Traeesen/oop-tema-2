@@ -7,7 +7,6 @@
 
 class Department
 {
-    std::vector<int> blah;
     std::vector<std::shared_ptr<Staff>> assignedStaff;
     std::vector<std::shared_ptr<Patient>> patients;
     std::string name="";
@@ -20,7 +19,7 @@ class Department
         void setName(const std::string& newName);
         const std::string& getName() const;
         void addPatient(std::shared_ptr<Patient> p);
-        std::vector<std::shared_ptr<Patient>> getPatients();
+        std::vector<std::shared_ptr<Patient>>& getPatients();
         void removeFirstPatient();
         void addAvailableNurse();
         bool useAvailableNurse();
@@ -36,5 +35,6 @@ class Department
         void addEmployee(std::shared_ptr<Staff> e);
 
         friend std::ostream& operator<<(std::ostream& os, const Department& d);
-        Department& operator=(const Department& other);
+        friend void Swap(Department& a, Department& b);
+        Department& operator=(Department other);
 };

@@ -46,7 +46,7 @@ void Department::addPatient(std::shared_ptr<Patient> p)
     patients.push_back(p);
 }
 
-std::vector<std::shared_ptr<Patient>> Department::getPatients()
+std::vector<std::shared_ptr<Patient>>& Department::getPatients()
 {
     return patients;
 }
@@ -75,21 +75,35 @@ bool Department::useAvailableNurse()
     return false;
 }
 
-Department& Department::operator=(const Department& other)
+void Swap(Department& a, Department& b)
 {
-    if (this == &other) return *this;
-
-    setName(other.getName());
-
-    assignedStaff = other.getStaff();
-
+    std::swap(a.name, b.name);
+    std::swap(a.patients, b.patients);
+    std::swap(a.assignedStaff, b.assignedStaff);
+}
+Department& Department::operator=(Department other)
+{
+    Swap(*this, other);
     return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const Department& d)
 {
-    os << d.getName();
-    os << "---EMPLOYEES:\n";
-    for (int i = 0; i < d.getEmployeeCount(); i++) os << "    |" << *(d.getStaff()[i]) << "\n";
+    int doctors = 0;
+    int nurses = 0;
+
+    for(int i = 0; i < d.getEmployeeCount(); i++)
+    {
+        if(std::dynamic_pointer_cast<Doctor>(d.getStaff()[i])) doctors++;
+        else if(std::dynamic_pointer_cast<Nurse>(d.getStaff()[i])) nurses++;
+    }
+
+    os << d.getName() << "\n";
+    os << "Doctors: " << doctors << ", Nurses: " << nurses;
+    os << "---LIST OF STAFF:\n";
+
+    for(int i = 0; i < d.getEmployeeCount(); i++)
+        os << "    | " << *(d.getStaff()[i]) << "\n";
+
     return os;
 }
