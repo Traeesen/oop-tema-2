@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "patient.h"
+#include "exceptions.h"
 
 //setter-e/getter-e
 
@@ -14,6 +15,7 @@ std::string Patient::getName() const
 }
 void Patient::setAge(const int newAge)
 {
+    if(newAge < 0 || newAge > 120) throw InvalidAgeException();
     age = newAge;
 }
 int Patient::getAge() const
@@ -55,16 +57,12 @@ Patient::Patient() : name(""), age(0), id(nextId++)
 {
 }
 
-Patient::Patient(const std::string& name, const int age)
-    : name(name), age(age), id(nextId++)
+Patient::Patient(const std::string& name, const int age) : name(name), age(age), id(nextId++)
 {
+    if(age < 0 || age > 120) throw InvalidAgeException();
 }
 
-Patient::Patient(const Patient& other)
-    : name(other.name),
-      age(other.age),
-      problems(other.problems),
-      id(nextId++)
+Patient::Patient(const Patient& other) : name(other.name), age(other.age), problems(other.problems), id(nextId++)
 {
 }
 

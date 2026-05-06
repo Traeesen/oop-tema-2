@@ -1,13 +1,15 @@
 #include <iostream>
 #include <vector>
 #include "staff.h"
+#include "exceptions.h"
 
 // -- STAFF --
 
 //getter-e/setter-e
 void Staff::setSalary(const int newSalary)
 {
-    salary=newSalary;
+    if(newSalary < 0) throw InvalidSalaryException();
+    salary = newSalary;
 }
 int Staff::getSalary() const
 {
