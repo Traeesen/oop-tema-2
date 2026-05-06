@@ -102,9 +102,49 @@ Doctor::Doctor(const Doctor& other) : Staff(other)
 }
 
 //metoda virtuala
-void Doctor::doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments)
+void Doctor::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments)
 {
-    std::cout << "Doctor treating patients in " << specialisation << "\n";
+    for (int i = 0; i < departments.size(); i++)
+    {
+        if (departments[i].getName() == specialisation)
+        {
+            int patientsThisHour = patientsPerDay / 8;
+
+            if (patientsThisHour < 1) patientsThisHour = 1;
+
+            // nurse doubles efficiency
+            if (departments[i].useAvailableNurse())
+            {
+                patientsThisHour *= 2;
+            }
+            else
+            {
+                patientsThisHour /= 2;
+                if (patientsThisHour < 1) patientsThisHour = 1;
+            }
+
+            for (int j = 0; j < patientsThisHour && departments[i].getPatients().size() > 0; j++)
+            {
+                std::shared_ptr<Patient> patient = departments[i].getPatients()[0];
+
+                departments[i].removeFirstPatient();
+
+                if (patient->getProblems().size() > 0)
+                {
+                    std::cout << getName() << " Treated " << patient->getName() << " for " << patient->getProblems()[0] << "\n";
+                    patient->removeFirstProblem();
+                }
+
+                // patient still needs treatment
+                if (patient->getProblems().size() > 0)
+                {
+                    waitingInQueue.push_back(patient);
+                }
+            }
+
+            break;
+        }
+    }
 }
 
 //operatori
@@ -142,9 +182,17 @@ Nurse::Nurse(const Nurse& other) : Staff(other), role(other.role)
 }
 
 //metoda virtuala
-void Nurse::doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments)
+void Nurse::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments)
 {
-    std::cout << "Nurse working in " << role << "\n";
+    for (int i = 0; i < departments.size(); i++)
+    {
+        if (departments[i].getName() == role)
+        {
+            departments[i].addAvailableNurse();
+            std::cout << getName()<< " is assisting department "<< role<< "\n";
+            break;
+        }
+    }
 }
 
 //operatori
@@ -181,8 +229,40 @@ Admin::Admin(const Admin& other) : Staff(other)
 }
 
 //metoda virtuala
-void Admin::doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments)
+void Admin::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments)
 {
+    int patientsToRedirect = 1;
+
+    for (int i = 0; i < patientsToRedirect && waitingInQueue.size() > 0; i++)
+    {
+        std::shared_ptr<Patient> patient = waitingInQueue[0];
+        waitingInQueue.erase(waitingInQueue.begin());
+
+        if (patient->getProblems().size() == 0)
+            continue;
+
+        std::string neededDepartment = patient->getProblems()[0];
+
+        bool found = false;
+
+        for (int j = 0; j < departments.size(); j++)
+        {
+            if (departments[j].getName() == neededDepartment)
+            {
+                departments[j].addPatient(patient);
+                found = true;
+
+                std::cout << getName()<< " redirected "<< patient->getName()<< " to "<< neededDepartment<< "\n";
+
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            std::cout << getName()<< " could not redirect "<< patient->getName()<< " because department "<< neededDepartment<< " does not exist. Patient cannot be treated.\n";
+        }
+    }
 }
 
 //operatori

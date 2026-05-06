@@ -20,10 +20,12 @@ int main()
     std::vector<Department> departments;
     std::vector<std::shared_ptr<Staff>> staff;
     {
+
         std::ifstream fin("doctors.txt");
+
         std::string name, role;
         int patientsPerDay, salary;
-        while(fin >> name >> salary >> role >> patientsPerDay)
+        while (fin >> name >> role >> patientsPerDay >> salary)
         {
             std::shared_ptr<Doctor> d = std::make_shared<Doctor>(name, salary, role, patientsPerDay);
 
@@ -51,7 +53,7 @@ int main()
         std::ifstream fin("nurses.txt");
         std::string name, role;
         int salary;
-        while(fin >> name >> salary >> role)
+        while(fin >> name >> role >> salary)
         {
             std::shared_ptr<Nurse> d = std::make_shared<Nurse>(name, salary, role);
 
@@ -85,14 +87,14 @@ int main()
         }
     }
 
-    std::vector<Patient> patients;
+    std::vector<std::shared_ptr<Patient>> patients;
     {
         std::ifstream fin("patients.txt");
         std::string name;
         int age;
         while(fin >> name >> age)
         {
-            Patient p(name, age);
+            std::shared_ptr<Patient> p = std::make_shared<Patient>(name, age);
 
             std::string problems;
             std::getline(fin, problems); //luam restul liniei si o punem intr-un singur stringg
@@ -105,7 +107,7 @@ int main()
                 {
                     if (!word.empty())
                     {
-                        p.addProblem(word);
+                        p->addProblem(word);
                         word.clear();
                     }
                 }
@@ -118,7 +120,7 @@ int main()
             // last word
             if (!word.empty())
             {
-                p.addProblem(word);
+                p->addProblem(word);
             }
 
             patients.push_back(p);
@@ -127,13 +129,18 @@ int main()
 
     for(int hour=1; hour<=8; hour++) // 8 ore de munca
     {
+        std::cout<<'\n'<<"----------- HOUR " << hour << " -----------\n";
         int size = staff.size();
         for(int i=size-1; i>=0; i--)
         {
             staff[i]->doWork(patients, departments);
         }
+        if(patients.size() == 0)
+        {
+            std::cout<< "\nALL PATIENTS HAVE BEEN TREATED";
+            break;
+        }
     }
-    std::cout<<"ya";
 
     return 0;
 }

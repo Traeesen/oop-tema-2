@@ -37,7 +37,7 @@ class Staff
         Staff& operator=(const Staff& other);
 
         //metoda virtuala
-        virtual void doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments) = 0;
+        virtual void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments) = 0;
 };
 
 class Doctor : public Staff 
@@ -60,7 +60,7 @@ class Doctor : public Staff
         Doctor(const Doctor& other);
 
         //override
-        void doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments) override;
+        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments) override;
 
         //operatori
         Doctor& operator=(const Doctor& other);
@@ -78,7 +78,7 @@ class Nurse : public Staff
         Nurse(const Nurse& other);
 
         // override
-        void doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments) override;
+        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments) override;
 
         //operatori
         Nurse& operator=(const Nurse& other);
@@ -95,7 +95,7 @@ class Admin : public Staff
         Admin(const Admin& other);
 
         // override
-        void doWork(std::vector<Patient>& waitingInQueue, std::vector<Department>& departments) override;
+        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments) override;
 
         // operatori
         Admin& operator=(const Admin& other);

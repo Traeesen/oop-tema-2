@@ -41,6 +41,40 @@ void Department::addEmployee(std::shared_ptr<Staff> e)
     assignedStaff.push_back(e);
 }
 
+void Department::addPatient(std::shared_ptr<Patient> p)
+{
+    patients.push_back(p);
+}
+
+std::vector<std::shared_ptr<Patient>> Department::getPatients()
+{
+    return patients;
+}
+
+void Department::removeFirstPatient()
+{
+    if (!patients.empty())
+    {
+        patients.erase(patients.begin());
+    }
+}
+
+void Department::addAvailableNurse()
+{
+    availableNurses++;
+}
+
+bool Department::useAvailableNurse()
+{
+    if (availableNurses > 0)
+    {
+        availableNurses--;
+        return true;
+    }
+
+    return false;
+}
+
 Department& Department::operator=(const Department& other)
 {
     if (this == &other) return *this;

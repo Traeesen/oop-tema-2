@@ -21,6 +21,7 @@ public:
     void setProblems(const std::vector<std::string>& newProblems);
     void addProblem(const std::string& newProblem);
     std::vector<std::string> getProblems() const;
+    void removeFirstProblem();
 
     int getId() const;
 

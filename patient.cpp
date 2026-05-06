@@ -33,6 +33,15 @@ std::vector<std::string> Patient::getProblems() const
 {
     return problems;
 }
+void Patient::removeFirstProblem()
+{
+    if (!problems.empty())
+    {
+        problems.erase(problems.begin());
+    }
+}
+
+
 int Patient::getId() const
 {
     return id;
