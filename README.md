@@ -44,6 +44,54 @@ Programul foloseste:
 
 Cele trei tipuri de angajati au fost implementate ca clase derivate ale unei clase abstracte de `Staff`. Acestea folosesc functionalitatea comuna mostenita din clasa de baza, dar isi implementeaza propriul comportament prin functii virtuale.
 
+Afisarea este realizata polimorfic prin operator<< care foloseste o functie virtuala display(...)
+
+Input
+
+Programul foloseste fisiere text pentru datele initiale.
+
+  * doctors.txt
+
+Format:
+
+nume specializare pacienti_pe_zi salariu
+
+Exemplu:
+
+House doctor_familie 5 20000
+Doc chirurg 2 40000
+
+  * nurses.txt
+
+Format:
+
+nume specializare salariu
+
+  * admins.txt
+
+Format:
+
+nume salariu
+
+  * patients.txt
+
+Format:
+
+nume varsta lista_cabinete
+
+Exemplu:
+
+Ducu 19 doctor_familie laringolog chirurg
+
+Programul foloseste o ierarhie proprie de exceptii derivata din std::exception. Exceptiile sunt folosite pentru:
+  * varste invalide
+  * salarii invalide
+  * cabinete inexistente
+  * fisiere care nu pot fi deschise
+Exceptiile sunt aruncate in constructori sau la citirea fisierelor si tratate in main().
+
+
 Numele temei pt review: Pariuri sportive
 
 Nume coleg review: Bugeac Alexandru
+
